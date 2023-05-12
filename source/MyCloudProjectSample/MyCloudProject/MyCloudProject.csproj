@@ -18,6 +18,8 @@
   <ItemGroup>
     <ProjectReference Include="..\MyCloudProject.Common\MyCloudProject.Common.csproj" />
     <ProjectReference Include="..\MyExperiment\MyExperiment.csproj" />
+	<ProjectReference Include="..\VideoLibraryTest\VideoLibraryTest.csproj" />
+	<ProjectReference Include="..\VideoLibrary\VideoLibrary.csproj" />  
   </ItemGroup>
 
   <ItemGroup>
