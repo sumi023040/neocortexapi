@@ -47,6 +47,23 @@ namespace MyExperiment
             return Task.FromResult<IExperimentResult>(res); // TODO...
         }
 
+/*
+        /// another 
+        /// 
+        public Task<IExperimentResult> Run(string inputFile)
+        {
+            // TODO read file
+
+            // YOU START HERE WITH YOUR SE EXPERIMENT!!!!
+
+            ExperimentResult res = new ExperimentResult(this.config.GroupId, null);
+
+            res.StartTimeUtc = DateTime.UtcNow;
+
+            // Run your experiment code here.
+
+            return Task.FromResult<IExperimentResult>(res); // TODO...
+        }///*/
 
 
         /// <inheritdoc/>
