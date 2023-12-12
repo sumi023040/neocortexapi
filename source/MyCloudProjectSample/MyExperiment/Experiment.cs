@@ -124,9 +124,8 @@ namespace MyExperiment
         }
 
 
-        #region Private Methods
-
-
-        #endregion
+        private String runExperiment() {
+            return "Here the project results will be implemented";
+        }
     }
 }
