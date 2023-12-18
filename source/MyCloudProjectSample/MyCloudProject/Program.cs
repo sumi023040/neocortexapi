@@ -15,8 +15,6 @@ namespace MyCloudProject
         /// </summary>
         private static string projectName = "Video Learning With NeoCortexApi";
 
-        string test;
-
         static async Task Main(string[] args)
         {
             CancellationTokenSource tokeSrc = new CancellationTokenSource();
@@ -42,8 +40,8 @@ namespace MyCloudProject
 
             IStorageProvider storageProvider = new AzureStorageProvider(cfgSec);
 
-            Experiment experiment = new Experiment(cfgSec, storageProvider, logger/* put some additional config here */);
-            
+            Experiment experiment = new Experiment(cfgSec, storageProvider, projectName, logger/* put some additional config here */);
+
             await experiment.RunQueueListener(tokeSrc.Token);
 
             logger?.LogInformation($"{DateTime.Now} -  Experiment exit: {projectName}");
