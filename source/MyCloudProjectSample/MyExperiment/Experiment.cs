@@ -123,7 +123,10 @@ namespace MyExperiment
             this.logger?.LogInformation("Cancel pressed. Exiting the listener loop.");
         }
 
-
+        /// <summary>
+        /// This method is responsible for running the main portion of cloud computing code
+        /// </summary>
+        /// <returns></returns>
         private String runExperiment() {
             return "Here the project results will be implemented";
         }
