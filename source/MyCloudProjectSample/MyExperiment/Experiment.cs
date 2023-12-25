@@ -127,11 +127,6 @@ namespace MyExperiment
         /// This method is responsible for running the main portion of cloud computing code
         /// </summary>
         /// <returns></returns>
-        //private String runExperiment() {
-        //    int bmpWidth = 1024,
-        //    int bmpHeight = 1024,
-        //    decimal redStart = 200, decimal yellowMiddle = 127, decimal greenStart = 20);
-        //    return string(bmpWidth);
-        //}
+
     }
 }
