@@ -128,7 +128,10 @@ namespace MyExperiment
         /// </summary>
         /// <returns></returns>
         private String runExperiment() {
-            return "Here the project results will be implemented";
+            int bmpWidth = 1024,
+            int bmpHeight = 1024,
+            decimal redStart = 200, decimal yellowMiddle = 127, decimal greenStart = 20);
+            return string(bmpWidth);
         }
     }
 }
