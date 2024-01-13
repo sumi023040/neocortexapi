@@ -17,11 +17,6 @@ namespace MyExperiment
 
 /*
  
- {
-    "ExperimentId": "sasa",
-    "InputFile":"sasss",
-    THIS MESSAGE IS A SAMPLE TEXT MESSAGE
-
-}
+Experiment request message model can be changed to our own need in order to run the cloud project in the azure server
  
  */ 
