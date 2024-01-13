@@ -20,6 +20,7 @@ namespace MyExperiment
  {
     "ExperimentId": "sasa",
     "InputFile":"sasss",
+    THIS MESSAGE IS A SAMPLE TEXT MESSAGE
 
 }
  
