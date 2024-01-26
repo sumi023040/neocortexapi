@@ -1,5 +1,5 @@
 # Video Learning With NeoCortexApi
-## Motivation
+## Introduction
 This work "Video Learning with HTM CLA" introduces videos data into the Cortical Learning Algorithm in NeoCortex Api.
 Experiment in current work involves using Temporal Memory to learn binary representation of videos (sequence of bitarrays - each bitarray represents 1 frame).
 Afterwards the result of the learning is tested by giving the trained model an abitrary image, the model then tries to recreate a video with proceeding frame after the input frame. I implemented this projects test part in Azure cloud storage. Moreover, running this project on Azure Cloud, I explored and got to use very useful features of Azure Cloud services.
