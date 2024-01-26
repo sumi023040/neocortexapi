@@ -54,13 +54,13 @@ namespace MyCloudProject.Common
             builder.AddEnvironmentVariables();
             var configRoot = builder.Build();
 
-           
+
             return configRoot;
         }
 
-    
 
 
-     
+
+
     }
 }
