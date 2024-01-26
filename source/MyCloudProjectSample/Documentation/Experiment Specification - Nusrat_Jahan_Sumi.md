@@ -11,7 +11,7 @@ If you need to obtain a copy of our project on your own system, use these links 
 - Unit Test Cases: [here](https://github.com/ddobric/neocortexapi/blob/SequenceLearning_ToanTruong/Project12_HTMCLAVideoLearning/HTMVideoLearning/VideoLibraryTest/VideoLibraryTest.cs)
 
  
-## Information about our Azure accounts and their components
+## Information about my Azure accounts and their components
 
 |  |  |  |
 | --- | --- | --- |
