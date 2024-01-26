@@ -41,7 +41,7 @@ p.s Put off the tik from "Encode the message body in Base64"
 
 Azure portal > Home > nusratjahan | Queues > sumisqueue> Add message
 
-![Screenshot (108)]()
+![sumi-project-7](https://github.com/sumi023040/neocortexapi/assets/74204965/1a2dcce4-f9f6-4485-b7a7-76c715824487)
 
 **Messages added to the queue:**
 
