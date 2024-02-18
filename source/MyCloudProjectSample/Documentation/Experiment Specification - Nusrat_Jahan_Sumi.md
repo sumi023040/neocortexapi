@@ -36,6 +36,31 @@ HTM’s integral component, the Spatial Pooler, produces outputs that are easily
 
 ![sumi_project_diagram drawio](https://github.com/sumi023040/neocortexapi/assets/74204965/275f3a6f-3669-4e5d-b7e9-bda870f331af) Figure 1: Implementation of the Project</p>
 
+### How the Video Learning with NeoCortexApi works:
+In this experiment, Videos are learned as sequences of Frames. The link to the project code can be found in [VideoLearning.cs](https://github.com/ddobric/neocortexapi/blob/SequenceLearning_ToanTruong/Project12_HTMCLAVideoLearning/HTMVideoLearning/HTMVideoLearning/VideoLearning.cs). An overall view of the experiment can be found in the [Projet Folder](https://github.com/sumi023040/neocortexapi/tree/master/Project12_HTMCLAVideoLearning/HTMVideoLearning).  
+
+This project references Sequence Learning sample, see [SequenceLearning.cs](https://github.com/ddobric/neocortexapi/tree/master/source/Samples/NeoCortexApiSample).  
+
+Input Videos are currently generated from python scripts, using OpenCV2. See [DataGeneration](https://github.com/ddobric/neocortexapi/tree/SequenceLearning_ToanTruong/DataGeneration) for manual on usage and modification.  
+
+The Reading of Videos are enabled by [VideoLibrary](https://github.com/ddobric/neocortexapi/tree/SequenceLearning_ToanTruong/Project12_HTMCLAVideoLearning/HTMVideoLearning/VideoLibrary), written for this project using OpenCV2. This library requires nuget package [Emgu.CV](https://www.nuget.org/packages/Emgu.CV/), [Emgu.CV.Bitmap](https://www.nuget.org/packages/Emgu.CV.Bitmap/), [Emgu.CV.runtimes.windows](https://www.nuget.org/packages/Emgu.CV.runtime.windows/) version > 4.5.3.  
+Learning process include: 
+1. reading videos.
+2. convert videos to Lists of bitarrays.
+3. Spatial Pooler Learning with Homeostatic Plasticity Controller until reaching stable state.
+4. Learning with Spatial pooler and Temporal memory, conditional exit.
+5. Interactive testing section, output video from frame input.
+### Data Generation:
+The current encoding mechanism of the frame employs the convert of each pixels into an part in the input bit array. This input bit array is used by the model for training.  
+There are currently 3 training set:
+- SmallTrainingSet: has 3 video, 1 foreach label in {circle rectangle triangle}.    
+- TrainingVideos: has more video, intended for training in `PURE` colorMode
+- oneVideoTrainingSet
+The current most used set for training and debugging is SmallTrainingSet.  
+
+## Cloud Project Implementation
+
+One of the crucial part of the Video learning with neocortexapi was implement the unit tests to make sure the functionality works alright to the core. So I made sure all of the unit tests from my Software Engineering project ran on Cloud. For this I imported two Projects From the Softare Engineering project which is "VideoLibrary" and "VideoLibraryTest" to the solution "MyCloudProjectSample". After defining the Azure credentials inside the MyCloudProject.
 
 ## Information about my Azure accounts and their components
 
