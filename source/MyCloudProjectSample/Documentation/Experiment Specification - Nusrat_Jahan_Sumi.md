@@ -63,7 +63,7 @@ The current most used set for training and debugging is SmallTrainingSet.
 
 One of the crucial part of the Video learning with neocortexapi was implement the unit tests to make sure the functionality works alright to the core. So I made sure all of the unit tests from my Software Engineering project ran on Cloud. For this I imported two Projects From the Softare Engineering project which is "VideoLibrary" and "VideoLibraryTest" to the solution "MyCloudProjectSample". Inside the Experiment project the implementation of the Azure Cloud project happens. The "VideoLibraryTest" and "VideoLibrary" folder is the Software Engineering projects test folder and Library implementation folder responsible for video reading and writing. Then we import the tests in Experiment project and run them from inside the Experiment.cs file in order to run this project on the cloud.
 ![project_cc_12](https://github.com/sumi023040/neocortexapi/assets/74204965/90ffa5c8-d2b5-4396-8187-be9250592d33)
-<p>Project Structure</p>
+<p>Figure 2: Project Structure</p>
 
 In MyCloudProjectSample->MyExperiment->Experiment.cs, This code snippet is responsible for listening the queue message from the Azure Cloud's Queue Storage. 
 
