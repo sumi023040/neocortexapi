@@ -34,7 +34,8 @@ The Hierarchical Temporal Memory (HTM) model, based on the "Thousand Brains Theo
 
 HTM’s integral component, the Spatial Pooler, produces outputs that are easily recognized by downstream neurons, enhancing the overall HTM system performance. The model also encompasses sequence learning, such as generation, prediction, or recognition, based on trained legitimate sequence models. The Cortical Learning Algorithms (CLA), inspired by the neocortex, offer insights into brain functionality. These algorithms emulate the brain's pattern recognition and predictive intelligence, processing information streams, classifying them, and learning to distinguish differences using time-based patterns. Significantly, the temporal sequence in HTM is derived from input data streams, and the learning outcomes are tested by feeding an arbitrary image to the trained model, which then attempts to generate a subsequent video frame, demonstrating the model's predictive capability.
 
-![sumi_project_diagram drawio](https://github.com/sumi023040/neocortexapi/assets/74204965/275f3a6f-3669-4e5d-b7e9-bda870f331af) Figure 1: Implementation of the Project</p>
+![sumi_project_diagram drawio](https://github.com/sumi023040/neocortexapi/assets/74204965/275f3a6f-3669-4e5d-b7e9-bda870f331af) 
+<p>Figure 1: Implementation of the Project</p>
 
 ### How the Video Learning with NeoCortexApi works:
 In this experiment, Videos are learned as sequences of Frames. The link to the project code can be found in [VideoLearning.cs](https://github.com/ddobric/neocortexapi/blob/SequenceLearning_ToanTruong/Project12_HTMCLAVideoLearning/HTMVideoLearning/HTMVideoLearning/VideoLearning.cs). An overall view of the experiment can be found in the [Projet Folder](https://github.com/sumi023040/neocortexapi/tree/master/Project12_HTMCLAVideoLearning/HTMVideoLearning).  
@@ -61,6 +62,164 @@ The current most used set for training and debugging is SmallTrainingSet.
 ## Cloud Project Implementation
 
 One of the crucial part of the Video learning with neocortexapi was implement the unit tests to make sure the functionality works alright to the core. So I made sure all of the unit tests from my Software Engineering project ran on Cloud. For this I imported two Projects From the Softare Engineering project which is "VideoLibrary" and "VideoLibraryTest" to the solution "MyCloudProjectSample". After defining the Azure credentials inside the MyCloudProject.
+
+In MyCloudProjectSample->MyExperiment->Experiment.cs, This code snippet is responsible for listening the queue message from the Azure Cloud's Queue Storage. 
+
+``` 
+
+    public async Task RunQueueListener(CancellationToken cancelToken)
+        {
+
+            QueueClient queueClient = new QueueClient(this.config.StorageConnectionString, this.config.Queue);
+
+            while (cancelToken.IsCancellationRequested == false)
+            {
+                QueueMessage message = await queueClient.ReceiveMessageAsync();
+
+                if (message != null)
+                {
+                    try
+                    {
+                        string msgTxt = Encoding.UTF8.GetString(message.Body.ToArray());
+
+                        this.logger?.LogInformation($"Received the message {msgTxt}");
+
+                        // The message in the step 3 on architecture picture.
+                        ExerimentRequestMessage request = JsonSerializer.Deserialize<ExerimentRequestMessage>(msgTxt);
+
+                        // Step 4.
+                        //var inputFile = await this.storageProvider.DownloadInputFile(request.InputFile);
+                        var inputFile = request.InputFile;
+
+                        // Here is your SE Project code started.(Between steps 4 and 5).
+                        IExperimentResult result = await this.Run(inputFile);
+
+                        // Step 4 (oposite direction)
+                        //TODO. do serialization of the result.
+                        //await storageProvider.UploadResultFile("outputfile.txt", null);
+
+                        // Step 5.
+                        this.logger?.LogInformation($"{DateTime.Now} -  UploadExperimentResultFile...");
+                        await storageProvider.UploadResultFile($"Test_data_{DateTime.UtcNow.ToString("yyyyMMddHHmmssfff")}.txt", result.TestData);
+
+
+                        this.logger?.LogInformation($"{DateTime.Now} -  UploadExperimentResult...");
+                        await storageProvider.UploadExperimentResult(result);
+                        this.logger?.LogInformation($"{DateTime.Now} -  Experiment Completed Successfully...");
+
+                        await queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.logger?.LogError(ex, "TODO...");
+                    }
+                }
+                else
+                {
+                    await Task.Delay(500);
+                    logger?.LogTrace("Queue empty...");
+                }
+            }
+
+            this.logger?.LogInformation("Cancel pressed. Exiting the listener loop.");
+        }      
+        
+```
+
+This below code snippet is responsible for Uploading the results in Azure Cloud Table and Azure Cloud Blob container respectevely.
+
+```
+
+    public async Task UploadExperimentResult(IExperimentResult result)
+        {
+            Random rnd = new Random();
+            int rowKeyNumber = rnd.Next(0, 1000);
+            string rowKey = "sumicloud-" + rowKeyNumber.ToString();
+            string partitionKey = "nusrat-proj-" + rowKey;
+
+            var testResult = new ExperimentResult(partitionKey, rowKey)
+            {
+
+                ExperimentId = result.ExperimentId,
+                Name = result.Name,
+                Description = result.Description,
+                StartTimeUtc = result.StartTimeUtc,
+                EndTimeUtc = result.EndTimeUtc,
+                TestData = result.TestData,
+            };
+            Console.WriteLine($"Upload ExperimentResult to table: {this.config.ResultTable}");
+            var client = new TableClient(this.config.StorageConnectionString, this.config.ResultTable);
+
+            await client.CreateIfNotExistsAsync();
+            try
+            {
+                await client.AddEntityAsync<ExperimentResult>(testResult);
+                //await client.UpsertEntityAsync<ExperimentResult>(minimalResult);
+                Console.WriteLine("Uploaded to Table Storage completed");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to upload to Table Storage: {ex.ToString()}");
+            }
+
+        }
+
+        public async Task UploadResultFile(string fileName, byte[] data)
+        {
+            var experimentLabel = fileName;
+
+            BlobServiceClient blobServiceClient = new BlobServiceClient(this.config.StorageConnectionString);
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(this.config.ResultContainer);
+
+            // Write encoded data to text file
+            byte[] testData = data;
+
+            string blobName = experimentLabel;
+
+            // Upload the text data to the blob container
+            BlobClient blobClient = containerClient.GetBlobClient(blobName);
+            using (MemoryStream memoryStream = new MemoryStream(testData))
+            {
+                await blobClient.UploadAsync(memoryStream);
+            }
+
+        }
+
+    }
+```
+
+
+Then in the Expeiment.cs in the method ``` List<TestInfo> RunTests() ``` I imported all Unit tests and run them and get the results, and put the results in the Azure Cloud blob storage, Azure Cloud Table storage.
+
+The next steps would be Containerize the application with Docker, Upload it in Azure Container Registry, Create an Instance of that Container and Run them.
+
+## Benefits of Implementing this project in the Cloud
+
+This section details the specific advantages this method offers over traditional local testing practices, emphasizing the benefits directly related to my project's context.
+
+ 1. Enhanced Testing Efficiency
+
+ 2. On-Demand Scalability: The cloud provides on-demand scalability, allowing us to adjust computing resources based on our testing needs. This flexibility is crucial for video processing tests, which can be resource-intensive due to the large file sizes and the computational power required for video analysis and manipulation.
+
+ 3. Parallel Test Execution: Cloud environments enable us to run multiple tests simultaneously, drastically reducing the time needed to complete the testing cycle. This capability allows for rapid feedback and faster iterations, which is especially valuable in agile development environments.
+
+ 4. Cost and Resource Optimization
+
+ 5. Reduced Infrastructure Costs: By leveraging cloud services, we avoid the significant upfront costs associated with purchasing and maintaining dedicated hardware for testing. The cloud's pay-as-you-go pricing model means we only pay for the compute and storage resources we use, optimizing our project's budget.
+
+ 6. Efficient Resource Utilization: Running tests in the cloud eliminates the idle time of local resources, ensuring that we're using our allocated resources efficiently. This optimization can lead to cost savings and a greener footprint by reducing unnecessary energy consumption.
+
+ 7. Improved Collaboration and Accessibility
+
+ 8. Accessibility from Anywhere: Cloud-based testing environments are accessible from anywhere with an internet connection, enabling any team members to run tests, access results, and collaborate on improvements without being tied to a specific location. This flexibility is particularly beneficial for remote or distributed teams.
+
+ 9.  Centralized Results and Reporting: Test results and logs are automatically stored in the cloud, providing a single source of truth for all team members. This centralized storage simplifies result analysis, bug tracking, and historical data comparison, fostering a data-driven approach to software quality.
+
+ 10. Reliability and Consistency
+
+ 11. High Availability: Cloud providers typically offer high availability for their services, ensuring that our testing environment is always accessible. This reliability is critical for maintaining continuous integration and delivery pipelines.
+
+ 12.Consistent Testing Environment: Running our tests in a cloud environment ensures a consistent and controlled setting across all test executions. This consistency helps to eliminate the "works on my machine" problem, leading to more reliable and reproducible test outcomes.
 
 ## Information about my Azure accounts and their components
 
